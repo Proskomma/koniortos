@@ -5,7 +5,7 @@ const LoadingPage = () => {
   const logo = require("../assets/logo.png");
   return (
     <View style={styles.containerLoadingPage}>
-      <Image source={logo} style={{ width: 200, height: 150 }} />
+      <Image source={logo} style={{ width: 200, height: 198 }} />
 
       <View
         style={{
