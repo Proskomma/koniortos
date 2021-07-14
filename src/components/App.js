@@ -168,6 +168,9 @@ const App = () => {
                 setNameOfPage={setNameOfPage}
                 selected={selected}
                 setSelected={setSelected}
+                idOfDocSet={idOfDocSet}
+                setIdOfDocSet={setIdOfDocSet}
+                books={books}
               />
             )}
           </Stack.Screen>

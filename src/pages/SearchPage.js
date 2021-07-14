@@ -140,6 +140,7 @@ const SearchPage = ({
                       );
                       setNameOfPage("VersePage");
                       setBook(document.bookCode);
+                      setSelected(1);
                     }}
                   >
                     &emsp;{scopeParts[1]}&ensp;
@@ -260,8 +261,8 @@ const SearchPage = ({
             </Button>
 
             <Text style={styles.textInfoPagination}>
-              {listOfBooks.length - booksToSearch.length}/{listOfBooks.length}{" "}
-              books , showing {indexOfFirstBlock} to{" "}
+              {listOfBooks.length - booksToSearch.length}/{listOfBooks.length }{" "}
+              books , showing {indexOfFirstBlock + 1} to{" "}
               {Math.min(indexOfLastBlock, searchResults.length)} of{" "}
               {searchResults.length} {searchResults.length == 1 ? "result" : "results"}
             </Text>
@@ -368,7 +369,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-around"
+    justifyContent:"space-between"
 
   },
   hamburgerIcon: { 

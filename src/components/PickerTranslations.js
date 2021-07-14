@@ -8,7 +8,7 @@ const PickerTranslations = ({ setIdOfDocSet, idOfDocSet, books }) => {
       <Select
         variant="unstyled"
         style={styles.picker}
-        minWidth={90}
+        minWidth={95}
         selectedValue={idOfDocSet}
         onValueChange={(itemValue) => {
           setIdOfDocSet(itemValue);

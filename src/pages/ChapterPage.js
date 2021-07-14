@@ -85,6 +85,7 @@ const ChapterPage = ({
                     navigation.navigate("VersePage");
                     setVerse(scopeParts[1]);
                     setNameOfPage("VersePage");
+                    setSelected(1);
                   }}
                 >
                   &emsp;{scopeParts[1]}&ensp;
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-around"
+    justifyContent:"space-between"
   },
   containerChapterPage: {
     minHeight: "100%",

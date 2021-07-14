@@ -1,7 +1,8 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Footer from "../components/Footer";
 import { Text, Menu, HamburgerIcon } from "native-base";
+import PickerTranslations from "../components/PickerTranslations";
 
 const AboutPage = ({
   navigation,
@@ -9,6 +10,9 @@ const AboutPage = ({
   setNameOfPage,
   selected,
   setSelected,
+  idOfDocSet,
+  setIdOfDocSet,
+  books
 }) => {
   return (
     <View style={styles.containerVersePage}>
@@ -39,13 +43,28 @@ const AboutPage = ({
           <Text style={styles.firstLetterKoniortos}>K</Text>
           <Text style={styles.letterOfKoniortos}>ONIORTOS</Text>
         </Text>
+        <View>
+            <PickerTranslations
+              idOfDocSet={idOfDocSet}
+              setIdOfDocSet={setIdOfDocSet}
+              books={books}
+            />
+          </View>
       </View>
-
+      <ScrollView style={styles.bodyAboutPage}>
       <Text style={styles.titleBody}>Koniortos v0.1.0</Text>
       <Text style={styles.bodyAboutPage}>
-        A React native application https://github.com/Proskomma/koniortos Using
-        Proskomma JS for Unfolding Word v0.4.36 © Mark Howe, MIT License
-      </Text>
+        A React native application       </Text>
+
+        <Text style={styles.bodyAboutPage}>Using
+        Proskomma JS for Unfolding Word v0.4.36</Text>
+        <Text style={styles.bodyAboutPage}>https://github.com/Proskomma/koniortos </Text>
+        <Text style={styles.bodyAboutPage}>by Imad HAMZI © MVH Solutions
+</Text>
+<Text style={styles.bodyAboutPage}>MIT License</Text>
+      </ScrollView>
+
+ 
 
       <View >
         <Footer
@@ -70,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-around"
+    justifyContent:"space-between"
 
   },
   containerKoniortosText: {
@@ -89,12 +108,16 @@ const styles = StyleSheet.create({
     color: "white",
   },
   bodyAboutPage: {
-    paddingLeft: 12,
-    paddingRight: 12,
+
     paddingBottom: 15,
     fontSize: 16,
   },
+  bodyAboutPage:{
+    height:50,
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
   titleBody: { fontWeight: "bold", fontSize: 17, paddingTop: 40 ,    paddingLeft: 12,
-  paddingRight: 12,},
+  paddingRight: 12,paddingBottom:12},
 });
 export default AboutPage;

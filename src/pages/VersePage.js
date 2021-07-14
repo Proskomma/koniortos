@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-around"
+    justifyContent:"space-between"
 
   },
   textBible: {
