@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import Loading from "../components/Loading";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Button, Select, Box, Menu, Divider, HamburgerIcon } from "native-base";
+import { Button, Select, Menu, HamburgerIcon } from "native-base";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import PickerTranslations from "../components/PickerTranslations";
 
 const ChapterPage = ({
@@ -102,10 +101,10 @@ const ChapterPage = ({
   if (!books || !resultChapter) {
     return (
       <View style={styles.containerChapterPage}>
-        <View style={{height:"100%"}}>
-        <Loading />
+        <View style={{ height: "100%" }}>
+          <Loading />
         </View>
-        </View>
+      </View>
     );
   } else {
     return (
@@ -117,11 +116,10 @@ const ChapterPage = ({
             trigger={(triggerProps) => {
               return (
                 <Pressable
-                style={{ color: "white" }}
                   accessibilityLabel="More options menu"
                   {...triggerProps}
                 >
-                  <HamburgerIcon  />
+                  <HamburgerIcon style={styles.hamburger} />
                 </Pressable>
               );
             }}
@@ -209,8 +207,7 @@ const ChapterPage = ({
           </View>
         </ScrollView>
 
-        <View
->
+        <View>
           <Footer
             navigation={navigation}
             setNameOfPage={setNameOfPage}
@@ -235,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-between"
+    justifyContent: "space-between",
   },
   containerChapterPage: {
     minHeight: "100%",
@@ -257,7 +254,6 @@ const styles = StyleSheet.create({
     fontSize: 37,
     color: "white",
   },
-
   letterOfKoniortos: {
     fontSize: 21,
     color: "white",
@@ -287,6 +283,9 @@ const styles = StyleSheet.create({
   },
   textDirection: {
     writingDirection: "rtl",
+  },
+  hamburger: {
+    color: "white",
   },
 });
 

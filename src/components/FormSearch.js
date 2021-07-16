@@ -1,22 +1,21 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Input, Button } from "native-base";
-const FormSearch = ({ isLoading, setIsLoading, setTemporaryInput, temporaryInput, listOfBooks, setInputSearch, setBooksToSearch, setSearchResults, indexOfFirstBlock, indexOfLastBlock, setCurrentPage, setBlocksPerPage, setSearchResult   }) => {
+const FormSearch = ({  setSearchWaiting,isLoading, setIsLoading, setTemporaryInput, temporaryInput, setInputSearch, setSearchResults, indexOfFirstBlock, indexOfLastBlock, setCurrentPage, setBlocksPerPage, setSearchResult   }) => {
 
   const handlePress = () => {
     if (temporaryInput.length > 0) {
       setIsLoading(true)
       setInputSearch(temporaryInput);
-      setBooksToSearch(listOfBooks);
       setSearchResults([]);
       setSearchResult(null);
       indexOfFirstBlock = 0;
       indexOfLastBlock = 0;
       setCurrentPage(1);
       setBlocksPerPage(10);
+      setSearchWaiting(true);
     }
   };
-  
   
   return (
     <View style={styles.containerForm}>

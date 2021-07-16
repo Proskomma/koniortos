@@ -72,17 +72,15 @@ const Pagination = ({
                 .documents.map((item) => (
                   <Select.Item
                     key={item.id}
-                    label={ item.name || item.name2}
+                    label={item.name || item.name2}
                     value={item.bookCode}
                   />
                 ))}
           </Select>
-          
+
           <Text style={styles.textChapVers}>
             {chapter} : {verse}
           </Text>
-
-
 
           <Button
             variant="unstyled"
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
   textChapVers: {
     fontSize: 15,
     fontWeight: "bold",
-    paddingLeft:10,
+    paddingLeft: 10,
   },
 });
 

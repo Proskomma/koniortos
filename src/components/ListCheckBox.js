@@ -16,18 +16,15 @@ const ListCheckBox = ({
   };
 
   return (
-    <View
-      style={styles.containerListCheckboxs}
-    >
+    <View style={styles.containerListCheckboxs}>
       {tabOfTranslationName.map((book) => (
         <View style={styles.checkboxs} key={book}>
           <Checkbox
-                  accessibilityLabel="This is a dummy checkbox"
-
-           onChange={() => {
-            handleChange(book);
-            console.log(displayFields)
-          }}
+            accessibilityLabel="This is a dummy checkbox"
+            onChange={() => {
+              handleChange(book);
+              console.log(displayFields);
+            }}
             size="sm"
             value={book}
             isChecked={displayFields.includes(book)}

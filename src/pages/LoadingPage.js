@@ -5,7 +5,7 @@ const LoadingPage = () => {
   const logo = require("../assets/logo.png");
   return (
     <View style={styles.containerLoadingPage}>
-      <Image source={logo} style={{ width: 250, height: 220 }} />
+      <Image source={logo} style={styles.logo} />
 
       <View
         style={{
@@ -22,8 +22,8 @@ const LoadingPage = () => {
             margin: "auto",
           }}
         >
-          <Text style={{ fontSize: 67, color: "white" }}>K</Text>
-          <Text style={{ fontSize: 41, color: "white" }}>ONIORTOS</Text>
+          <Text style={styles.firstLetterKoniortos}>K</Text>
+          <Text style={styles.letterOfKoniortos}>ONIORTOS</Text>
         </Text>
       </View>
     </View>
@@ -41,6 +41,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "white",
     marginBottom: 20,
+  },
+  logo : { 
+    width: 250, 
+    height: 220,
+  },
+  firstLetterKoniortos: {
+    fontSize: 37,
+    color: "white",
+  },
+  letterOfKoniortos: {
+    fontSize: 21,
+    color: "white",
   },
 });
 

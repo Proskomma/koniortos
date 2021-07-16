@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import { Spinner, Heading, Center } from "native-base";
 
 const Loading = () => {
@@ -13,8 +12,5 @@ const Loading = () => {
   );
 };
 
-const styles = StyleSheet.create({
-
-});
 
 export default Loading;

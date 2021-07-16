@@ -1,10 +1,10 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import {  Select } from "native-base";
+import { Select } from "native-base";
 
 const PickerTranslations = ({ setIdOfDocSet, idOfDocSet, books }) => {
   return (
-    <View style={styles.containerPicker}>
+    <View>
       <Select
         variant="unstyled"
         style={styles.picker}
@@ -28,11 +28,8 @@ const PickerTranslations = ({ setIdOfDocSet, idOfDocSet, books }) => {
 };
 
 const styles = StyleSheet.create({
-  containerPicker: {
-
-  },
   picker: {
-    color:"white",
+    color: "white",
   },
 });
 

@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import Footer from "../components/Footer";
-import {
-  Text,
-  ScrollView,
-  Select,
-  Box,
-  Menu,
-  Divider,
-  HamburgerIcon,
-} from "native-base";
+import { Text, ScrollView, Menu, HamburgerIcon } from "native-base";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
 import ListCheckBox from "../components/ListCheckBox";
@@ -34,11 +26,10 @@ const VersePage = ({
   nameOfPage,
   selected,
   setSelected,
-  setIdOfDocSet
+  setIdOfDocSet,
 }) => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState();
-  const [pageMenu, setPageMenu] = React.useState("");
 
   const exactSearchQueryTemplate =
     " {\n" +
@@ -95,25 +86,24 @@ const VersePage = ({
     return (
       <View style={styles.containerVersePage}>
         <View style={styles.headerVersePage}>
-        <Menu
-        placement="top right"
-        shouldOverlapWithTrigger
-          trigger={(triggerProps) => {
-            return (
-              <Pressable
-                accessibilityLabel="More options menu"
-                {...triggerProps}
-              >
-                <HamburgerIcon  style={{color:"white"}}
-/>
-              </Pressable>
-            );
-          }}
-        >
-          <Menu.Item onPress={() =>  navigation.navigate("AboutPage")
-}>About</Menu.Item>
-
-        </Menu>
+          <Menu
+            placement="top right"
+            shouldOverlapWithTrigger
+            trigger={(triggerProps) => {
+              return (
+                <Pressable
+                  accessibilityLabel="More options menu"
+                  {...triggerProps}
+                >
+                  <HamburgerIcon style={styles.hamburger} />
+                </Pressable>
+              );
+            }}
+          >
+            <Menu.Item onPress={() => navigation.navigate("AboutPage")}>
+              About
+            </Menu.Item>
+          </Menu>
           <Text style={styles.containerKoniortosText}>
             <Text style={styles.firstLetterKoniortos}>K</Text>
             <Text style={styles.letterOfKoniortos}>ONIORTOS</Text>
@@ -126,10 +116,7 @@ const VersePage = ({
               books={books}
             />
           </View>
-
         </View>
-
-
 
         <Pagination
           result={result}
@@ -163,7 +150,7 @@ const VersePage = ({
             ) : null
           )}
         </ScrollView>
-        <View >
+        <View>
           <Footer
             navigation={navigation}
             setNameOfPage={setNameOfPage}
@@ -187,8 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-between"
-
+    justifyContent: "space-between",
   },
   textBible: {
     paddingLeft: 12,
@@ -198,10 +184,6 @@ const styles = StyleSheet.create({
   titleBible: {
     fontWeight: "bold",
     marginBottom: 3,
-  },
-  hamburgerIcon: {
-    marginLeft: 5,
-    paddingRight: 40,
   },
   bodyVersePage: {
     marginBottom: 60,
@@ -224,6 +206,9 @@ const styles = StyleSheet.create({
   },
   letterOfKoniortos: {
     fontSize: 21,
+    color: "white",
+  },
+  hamburger: {
     color: "white",
   },
 });

@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
-import {
-  Text,
-  Select,
-  Box,
-  Menu,
-  Divider,
-  Button,
-  HamburgerIcon,
-} from "native-base";import Footer from "../components/Footer";
+import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { Text, Box, Menu, Button, HamburgerIcon } from "native-base";
+import Footer from "../components/Footer";
 import FormSearch from "../components/FormSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import PickerTranslations from "../components/PickerTranslations";
 
 const SearchPage = ({
@@ -37,26 +29,24 @@ const SearchPage = ({
   const [searchResults, setSearchResults] = useState([]);
   const [searchResult, setSearchResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [from, setFrom] = useState(1);
+  const [to, setTo] = useState(11);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [blocksPerPage, setBlocksPerPage] = useState(10);
+  const [searchWaiting, setSearchWaiting] = useState(false);
 
   const scrollRef = useRef();
 
   const scrollToTop = () => {
     scrollRef.current?.scrollTo({
       y: 0,
-      animated : true,
-    })
-  }
+      animated: true,
+    });
+  };
 
-
-
-
-  //Pagination
-  const [from, setFrom] = useState(1);
-  const [to, setTo] = useState(11);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [blocksPerPage, setBlocksPerPage] = useState(10);
   let indexOfLastBlock = currentPage * blocksPerPage;
   let indexOfFirstBlock = indexOfLastBlock - blocksPerPage;
+
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(searchResults.length / blocksPerPage); i++) {
     pageNumbers.push(i);
@@ -77,8 +67,8 @@ const SearchPage = ({
     '       title: header(id: "toc2")\n' +
     "       mainSequence {\n" +
     "         blocks(\n" +
-    '            allChars : true ' + 
-    '           withMatchingChars: [%searchTerms%]\n' +
+    "            allChars : true " +
+    "           withMatchingChars: [%searchTerms%]\n" +
     "         ) {\n" +
     "           scopeLabels tokens { payload }\n" +
     "           items { type subType payload }\n" +
@@ -89,9 +79,50 @@ const SearchPage = ({
     "  }\n" +
     "}";
 
+  // find out in which book the search word is present
   useEffect(() => {
-    if (searchResult ) {
+    if (searchWaiting) {
+      const queryTemplatePreSearch =
+        "{" +
+        '  docSet(id:"%docSetId%") {\n' +
+        "    documents(" +
+        "         allChars : true " +
+        "         withMatchingChars: [%searchTerms%]\n" +
+        "         ) {\n" +
+        '           bookCode: header(id:"bookCode") ' +
+        "         }\n" +
+        "       }\n" +
+        "}";
 
+      const searchTermsArray = inputSearch
+        .split(/ +/)
+        .map((st) => st.trim())
+        .filter((st) => st.length > 0);
+
+      if (searchTermsArray.length > 0) {
+        const browseQuerySearch = queryTemplatePreSearch
+          .replace(/%docSetId%/g, idOfDocSet)
+          .replace(
+            /%searchTerms%/g,
+            searchTermsArray.map((st) => `"^${st}$"`).join(", ")
+          );
+
+        setQuerySearch(browseQuerySearch);
+        const doQuery = async () => {
+          const output = await pk.gqlQuery(browseQuerySearch);
+          setBooksToSearch(
+            output.data.docSet.documents.map((book) => book.bookCode)
+          );
+          setSearchWaiting(false);
+        };
+        doQuery();
+      }
+    }
+  }, [searchWaiting]);
+
+  // insert in searchResults the number of available results according to the searched word
+  useEffect(() => {
+    if (searchResult) {
       const document = searchResult.data.docSet.document;
       const matchableWords =
         searchResult &&
@@ -158,22 +189,28 @@ const SearchPage = ({
     }
   }, [searchResult]);
 
+  // query that allows you to search for the word in books
   useEffect(() => {
-    if (booksToSearch.length > 0) {
+    if (booksToSearch.length > 0 && searchResults.length <= indexOfLastBlock) {
       const bookSearchforQuery = booksToSearch[0];
 
       const searchTermsArray = inputSearch
-        .split(/ +/).map((st) => st.trim()).filter(st => st.length > 0);
+        .split(/ +/)
+        .map((st) => st.trim())
+        .filter((st) => st.length > 0);
 
       if (searchTermsArray.length > 0) {
         const browseQuerySearch = queryTemplateSearch
           .replace(/%docSetId%/g, idOfDocSet)
           .replace(/%bookCode%/g, bookSearchforQuery)
-          .replace(/%searchTerms%/g, searchTermsArray.map((st) => `"^${st}$"`).join(', '))
+          .replace(
+            /%searchTerms%/g,
+            searchTermsArray.map((st) => `"^${st}$"`).join(", ")
+          )
           .replace(
             /%searchTermsRegex%/g,
             searchTermsArray.map((st) => `(^${st}$)`).join("|")
-          )
+          );
 
         setQuerySearch(browseQuerySearch);
         const doQuery = async () => {
@@ -184,37 +221,32 @@ const SearchPage = ({
         doQuery();
       }
     } else {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [booksToSearch, searchResults]);
-
-
+  }, [booksToSearch, searchResults, indexOfLastBlock]);
 
   return (
     <Box style={styles.containerSearchPage}>
       <View style={styles.headerSearchPage}>
-      <Menu
-              placement="top right"
-              shouldOverlapWithTrigger
+        <Menu
+          placement="top right"
+          shouldOverlapWithTrigger
           trigger={(triggerProps) => {
             return (
               <Pressable
                 accessibilityLabel="More options menu"
                 {...triggerProps}
               >
-                <HamburgerIcon  style={{color:"white"}}
-/>
+                <HamburgerIcon style={styles.hamburger} />
               </Pressable>
             );
           }}
         >
-          <Menu.Item onPress={() =>  navigation.navigate("AboutPage")
-}>About</Menu.Item>
-
+          <Menu.Item onPress={() => navigation.navigate("AboutPage")}>
+            About
+          </Menu.Item>
         </Menu>
-        <Text
-          style={styles.containerKoniortosText}
-        >
+        <Text style={styles.containerKoniortosText}>
           <Text style={styles.firstLetterKoniortos}>K</Text>
           <Text style={styles.letterOfKoniortos}>ONIORTOS</Text>
         </Text>
@@ -225,10 +257,9 @@ const SearchPage = ({
           books={books}
         />
       </View>
-
       <FormSearch
-      isLoading={isLoading}
-      setIsLoading={setIsLoading}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
         setInputSearch={setInputSearch}
         setBooksToSearch={setBooksToSearch}
         setSearchResults={setSearchResults}
@@ -242,6 +273,7 @@ const SearchPage = ({
         setTemporaryInput={setTemporaryInput}
         listOfBooks={listOfBooks}
         setSearchResult={setSearchResult}
+        setSearchWaiting={setSearchWaiting}
       />{" "}
       {searchResults.length > 0 ? (
         <>
@@ -261,10 +293,11 @@ const SearchPage = ({
             </Button>
 
             <Text style={styles.textInfoPagination}>
-              {listOfBooks.length - booksToSearch.length}/{listOfBooks.length }{" "}
+              {listOfBooks.length - booksToSearch.length}/{listOfBooks.length}{" "}
               books , showing {indexOfFirstBlock + 1} to{" "}
               {Math.min(indexOfLastBlock, searchResults.length)} of{" "}
-              {searchResults.length} {searchResults.length == 1 ? "result" : "results"}
+              {searchResults.length}{" "}
+              {searchResults.length == 1 ? "result" : "results"}
             </Text>
 
             <Button
@@ -290,11 +323,27 @@ const SearchPage = ({
                 .slice(indexOfFirstBlock, indexOfLastBlock)
                 .map((bl, indexBl) => (
                   <>
-                    <View style={styles.containerSearchResults}  key={indexBl}>
-                      <Text style={isLoading ? styles.textNoMatchesLoading : styles.textNoMatches} style={styles.titleBookChapVerse} key={indexBl+"_1"}>
+                    <View style={styles.containerSearchResults} key={indexBl}>
+                      <Text
+                        style={
+                          isLoading
+                            ? styles.textNoMatchesLoading
+                            : styles.textNoMatches
+                        }
+                        style={styles.titleBookChapVerse}
+                        key={indexBl + "_1"}
+                      >
                         {bl.bookCode} {bl.chapter} : {bl.verses} {"\n"}
                       </Text>
-                      <Text style={isLoading ? styles.textNoMatchesLoading : styles.textNoMatches} style={styles.textBodySearch} key={indexBl+"_2"}>
+                      <Text
+                        style={
+                          isLoading
+                            ? styles.textNoMatchesLoading
+                            : styles.textNoMatches
+                        }
+                        style={styles.textBodySearch}
+                        key={indexBl + "_2"}
+                      >
                         {bl.words} {"\n"}
                       </Text>
                     </View>
@@ -302,9 +351,7 @@ const SearchPage = ({
                 ))}
             </Box>
 
-            <Box 
-              style={styles.bottomPaginaton}
-            >
+            <Box style={styles.bottomPaginaton}>
               <Button
                 variant="unstyled"
                 isDisabled={currentPage === 1}
@@ -319,8 +366,9 @@ const SearchPage = ({
                   color={currentPage === 1 ? "#EBEBE4" : "#DF1919"}
                 />
               </Button>
-              <Text style={{ fontWeight: "bold" }}>
-                {currentPage} of {pageNumbers.length} {pageNumbers.length == 1 ? "page" : "pages"}
+              <Text style={textBottomPagination}>
+                {currentPage} of {pageNumbers.length}{" "}
+                {pageNumbers.length == 1 ? "page" : "pages"}
               </Text>
               <Button
                 variant="unstyled"
@@ -341,14 +389,18 @@ const SearchPage = ({
             </Box>
           </ScrollView>
         </>
-      ) : ( 
-                <View style={styles.containerPage}>
-                <Text style={isLoading ? styles.textNoMatchesLoading : styles.textNoMatches}>
-                No matches - type search terms above, then click 'Search' 
-                </Text>
-              </View> 
+      ) : (
+        <View style={styles.containerPage}>
+          <Text
+            style={
+              isLoading ? styles.textNoMatchesLoading : styles.textNoMatches
+            }
+          >
+            No matches - type search terms above, then click 'Search'
+          </Text>
+        </View>
       )}
-        <View >
+      <View>
         <Footer
           navigation={navigation}
           setNameOfPage={setNameOfPage}
@@ -356,44 +408,40 @@ const SearchPage = ({
           selected={selected}
           setSelected={setSelected}
         />
-      </View></Box>
+      </View>
+    </Box>
   );
 };
 const styles = StyleSheet.create({
-  containerSearchPage: { 
+  containerSearchPage: {
     minHeight: "100%",
   },
-  headerSearchPage : {
+  headerSearchPage: {
     width: "100%",
     height: 50,
     backgroundColor: "#415DE2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent:"space-between"
-
+    justifyContent: "space-between",
   },
-  hamburgerIcon: { 
-    marginLeft: 5,
-     paddingRight: 40 
-    },
-  containerKoniortosText : {
+  containerKoniortosText: {
     textAlign: "center",
     fontWeight: "bold",
     fontFamily: "papyrus",
     letterSpacing: 2,
     margin: "auto",
   },
-  firstLetterKoniortos: { 
+  firstLetterKoniortos: {
     fontSize: 37,
-     color: "white" 
-    },
+    color: "white",
+  },
   containerPage: {
     flex: 1,
     alignItems: "center",
   },
-  letterOfKoniortos: { 
-    fontSize: 21, 
-    color: "white" 
+  letterOfKoniortos: {
+    fontSize: 21,
+    color: "white",
   },
   numberOfVese: {
     fontWeight: "bold",
@@ -410,8 +458,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     marginBottom: 12,
     marginBottom: 20,
-    height:50
-
+    height: 50,
   },
   titleBookChapVerse: {
     fontWeight: "bold",
@@ -440,23 +487,29 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
-  textInfoPagination: { 
+  textInfoPagination: {
     fontWeight: "bold",
-     fontSize: 13,
-      textAlign: "center" 
-    },
+    fontSize: 13,
+    textAlign: "center",
+  },
   textNoMatches: {
     paddingLeft: 12,
     paddingRight: 12,
     paddingTop: 20,
-    textAlign:"center"
+    textAlign: "center",
   },
   textNoMatchesLoading: {
     paddingLeft: 12,
     paddingRight: 12,
     paddingTop: 20,
-    color:"#DADADA",
-    textAlign:"center"
+    color: "#DADADA",
+    textAlign: "center",
+  },
+  textBottomPagination: {
+    fontWeight: "bold",
+  },
+  hamburger: {
+    color: "white",
   },
 });
 
