@@ -65,9 +65,7 @@ const VersePage = ({
       .catch((err) => console.log(`ERROR: Could not run query: '${err}'`));
   }, [verse, chapter, ndocsLoaded, book]);
 
-  const handlePressMenu = () => {
-    console.log("coucou");
-  };
+
 
   if (!result || !books) {
     return (

@@ -366,7 +366,7 @@ const SearchPage = ({
                   color={currentPage === 1 ? "#EBEBE4" : "#DF1919"}
                 />
               </Button>
-              <Text style={textBottomPagination}>
+              <Text style={{fontWeight: "bold"}}>
                 {currentPage} of {pageNumbers.length}{" "}
                 {pageNumbers.length == 1 ? "page" : "pages"}
               </Text>

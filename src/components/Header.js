@@ -21,6 +21,7 @@ export default function Header(idOfDocSet, setIdOfDocSet, books, navigation) {
           About
         </Menu.Item>
       </Menu>
+      
       <Text style={styles.containerKoniortosText}>
         <Text style={styles.firstLetterKoniortos}>K</Text>
         <Text style={styles.letterOfKoniortos}>ONIORTOS</Text>
